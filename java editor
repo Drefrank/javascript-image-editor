@@ -1,0 +1,24 @@
+const Jimp = require('jimp');
+
+function editImageColor(imagePath, outputPath, redScale, greenScale, blueScale) {
+  Jimp.read(imagePath)
+    .then(image => {
+      // Adjust the color channels
+      image.scan(0, 0, image.bitmap.width, image.bitmap.height, function(x, y, idx) {
+        this.bitmap.data[idx + 0] = redScale;   // Red channel
+        this.bitmap.data[idx + 1]= greenScale; // Green channel
+        this.bitmap.data[idx + 2] *= blueScale;  // Blue channel
+      });
+
+      // Save the edited image as a PNG file
+      image.write(outputPath, () => {
+        console.log('Image color edited and saved successfully.');
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Example usage
+editImageColor('input_image.jpg', 'output_image.png', 1.5, 0.8, 0.2);
